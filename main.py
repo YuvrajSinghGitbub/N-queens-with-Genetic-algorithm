@@ -1,6 +1,6 @@
+from __future__ import annotations
 from random import randint, sample
-import cProfile
-import pstats
+from typing import cast
 
 
 class GeneticAlgorithm:
@@ -80,8 +80,8 @@ class GeneticAlgorithm:
             new_child1.extend(chromosome2[co_point:])
             new_child2.extend(chromosome1[co_point:])
 
-            fitness1: int = self.fitness(new_child1)
-            fitness2: int = self.fitness(new_child2)
+            fitness1 = cast(int, self.fitness(new_child1))
+            fitness2 = cast(int, self.fitness(new_child2))
 
             if not self.occurs_in(new_child1):
                 self.genepool.append([new_child1, fitness1])
@@ -99,7 +99,8 @@ class GeneticAlgorithm:
             else:
                 self.genepool[chromosome_index][0][mut_point] += 1
 
-            new_fitness: int = self.fitness(self.genepool[chromosome_index][0])
+            new_fitness = cast(int, self.fitness(
+                self.genepool[chromosome_index][0]))
 
             self.genepool.append(
                 [self.genepool[chromosome_index][0], new_fitness])
@@ -123,13 +124,7 @@ class GeneticAlgorithm:
 
 def main() -> None:
     abc = GeneticAlgorithm()
-
-    with cProfile.Profile() as pr:
-        abc.run(set_iterations=10000)
-
-    stats = pstats.Stats(pr)
-    stats.sort_stats(pstats.SortKey.TIME)
-    stats.dump_stats(filename="needs_profiling.prof")
+    abc.run()
 
 
 if __name__ == "__main__":
